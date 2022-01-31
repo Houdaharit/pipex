@@ -6,7 +6,7 @@
 /*   By: hharit <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/03 13:43:38 by hharit            #+#    #+#             */
-/*   Updated: 2022/01/03 22:58:44 by hharit           ###   ########.fr       */
+/*   Updated: 2022/01/31 19:08:54 by hharit           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,5 +30,5 @@ int	check_file(char *file);
 void	cmd_execve(char *path, char *argv2, char **envp);
 void	ft_initialize(int **p, char **path, int *fd1, int *fd2, char **argv, char **envp);
 char	*get_path(char *path, char *argv);
-
+void	free_2d(char **ptr);
 #endif

@@ -1,0 +1,15 @@
+Makefile
+a.out
+ft_split.c
+ft_split.o
+ft_strjoin.c
+ft_strjoin.o
+ft_strnstr.c
+ft_strnstr.o
+pipex
+pipex.c
+pipex.h
+pipex.o
+pipex_utils.c
+pipex_utils.o
+res

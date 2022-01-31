@@ -6,7 +6,7 @@
 /*   By: hharit <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/03 13:41:18 by hharit            #+#    #+#             */
-/*   Updated: 2022/01/31 13:50:25 by hharit           ###   ########.fr       */
+/*   Updated: 2022/01/31 21:18:50 by hharit           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,19 +33,30 @@ char	*get_path_envp(char	**envp)
 char	*check_cmd(char *path, char *cmd)
 {
 	char	**tab;
+	char	*cmd1;
+	char	*ret;
+	int		j;
 
+	j = 0;
 	if (cmd)
 	{
-		cmd = ft_strjoin("/", cmd);
+		cmd1 = ft_strjoin("/", cmd);
 		tab = ft_split(path, ':');
-		while(*tab)
+		while(tab[j])
 		{
-			if (!access(ft_strjoin(*tab,cmd), F_OK))
-				return (ft_strjoin(*tab, cmd));
-			tab++;
+			ret = ft_strjoin(tab[j], cmd1);
+			if (!access(ret, F_OK))
+			{
+				free(cmd1);
+				free_2d(tab);
+				return (ret);
+			}
+			free(ret);
+			j++;
 		}
+		free(cmd1);
+		free_2d(tab);
 	}
-	free(path);
 	return (NULL);
 }
 
@@ -61,17 +72,20 @@ int	check_file(char *file)
 void	cmd_execve(char *path, char *argv2, char **envp)
 {
 	char	**argv;
-
+	
 	argv = ft_split(argv2, 32);
 	if(execve(path, argv, envp) == -1)
-	{
 		perror("Command can not be executed !");
-		free(argv);
-		free(path);
-	}
+
 }
 
 char	*get_path(char *path, char *argv)
 {
-	return (check_cmd(path, ft_split(argv, 32)[0]));
+	char	**cmd;
+	char	*p;
+
+	cmd = ft_split(argv, 32);
+	p = check_cmd(path, cmd[0]);
+	free_2d(cmd);
+	return (p);
 }
