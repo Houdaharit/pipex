@@ -6,24 +6,11 @@
 /*   By: hharit <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/03 13:41:18 by hharit            #+#    #+#             */
-/*   Updated: 2022/01/31 21:18:28 by hharit           ###   ########.fr       */
+/*   Updated: 2022/02/01 20:58:07 by hharit           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-
-void	free_2d(char **ptr)
-{
-	int	i;
-
-	i = 0;
-	while (ptr[i])
-	{
-		free(ptr[i]);
-		i++;
-	}
-	free(ptr);
-}
 
 void	ft_initialize(int **p, char  **path, int *fd1, int *fd2, char **argv, char **envp)
 {
@@ -64,14 +51,30 @@ int main(int argc, char **argv, char **envp)
 	int	fd2;
 	int	*p;
 	char	*path;
+	int pid;
 
 	if (argc != 5 || !check_file(argv[1]))
 		exit(EXIT_FAILURE);
-	ft_initialize(&p, &path, &fd1, &fd2, argv, envp);
+	pid = fork();
+	fd1 = open(argv[1], O_RDONLY);
+    fd2 = open(argv[4], O_CREAT | O_WRONLY, 07666);
+    path = get_path_envp(envp);
+    p = (int *)malloc(sizeof(int) * 2);
 	pipe(p);
-	if (fork() > 0)
-		parent_p(p[0], p[1], fd1, path, argv[2], envp);
-	if (fork() == 0)
-		child_p(p[0], p[1], fd1, fd2, path, argv[3], envp);
-	system("leaks pipex");
+	if (pid == 0)
+	{
+		close(p[1]);
+		close(fd1);
+		dup2(p[0], 0);
+		dup2(fd2, 1);
+		cmd_execve(get_path(path, argv[3]), argv[3],envp);
+	}
+	else
+	{
+		close(p[0]);
+		dup2(fd1, 0);
+		dup2(p[1], 1);
+		wait(NULL);
+		cmd_execve(get_path(path, argv[2]), argv[2], envp);
+	}
 }

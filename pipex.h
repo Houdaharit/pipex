@@ -6,7 +6,7 @@
 /*   By: hharit <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/03 13:43:38 by hharit            #+#    #+#             */
-/*   Updated: 2022/01/31 19:08:54 by hharit           ###   ########.fr       */
+/*   Updated: 2022/02/01 23:37:21 by hharit           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,16 +18,26 @@
 # include <sys/wait.h>
 #include <fcntl.h>
 
+typedef struct s_pipex
+{
+	char	*path_exc;
+	char	*cmd;
+	int		p[2];
+	int		fd1;
+	int		fd2;
+}	pipex;
+
 char	**ft_split(char *str, char sep);
 char	*get_path_envp(char **envp);
-int	ft_strlen(char *str);
+int		ft_strlen(char *str);
 char	*ft_strnstr(char *haystack, char *needle, size_t len);
 char	*get_path(char *path, char *argv);
 char	*ft_strdup(char *str);
 char	*ft_strjoin(char *s1, char *s2);
 char	*check_cmd(char *path, char *cmd);
-int	check_file(char *file);
-void	cmd_execve(char *path, char *argv2, char **envp);
+int		check_file(char *file);
+//void	cmd_execve(char *path, char *argv2, char **envp);
+char	*get_cmd(char *path, char *cmd);
 void	ft_initialize(int **p, char **path, int *fd1, int *fd2, char **argv, char **envp);
 char	*get_path(char *path, char *argv);
 void	free_2d(char **ptr);

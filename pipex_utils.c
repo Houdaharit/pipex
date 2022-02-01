@@ -6,11 +6,24 @@
 /*   By: hharit <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/03 13:41:18 by hharit            #+#    #+#             */
-/*   Updated: 2022/01/31 21:18:50 by hharit           ###   ########.fr       */
+/*   Updated: 2022/02/01 23:23:29 by hharit           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
+
+void	free_2d(char **ptr)
+{
+	int	i;
+
+	i = 0;
+	while (ptr[i])
+	{
+		free(ptr[i]);
+		i++;
+	}
+	free(ptr);
+}
 
 char	*get_path_envp(char	**envp)
 {
@@ -30,36 +43,6 @@ char	*get_path_envp(char	**envp)
 	return (path);
 }
 
-char	*check_cmd(char *path, char *cmd)
-{
-	char	**tab;
-	char	*cmd1;
-	char	*ret;
-	int		j;
-
-	j = 0;
-	if (cmd)
-	{
-		cmd1 = ft_strjoin("/", cmd);
-		tab = ft_split(path, ':');
-		while(tab[j])
-		{
-			ret = ft_strjoin(tab[j], cmd1);
-			if (!access(ret, F_OK))
-			{
-				free(cmd1);
-				free_2d(tab);
-				return (ret);
-			}
-			free(ret);
-			j++;
-		}
-		free(cmd1);
-		free_2d(tab);
-	}
-	return (NULL);
-}
-
 int	check_file(char *file)
 {
 	if (!access(file, F_OK))
@@ -69,23 +52,31 @@ int	check_file(char *file)
 	return (0);
 }
 
-void	cmd_execve(char *path, char *argv2, char **envp)
+char	*get_cmd(char *path, char *cmd)
 {
-	char	**argv;
-	
-	argv = ft_split(argv2, 32);
-	if(execve(path, argv, envp) == -1)
-		perror("Command can not be executed !");
+	char	**pth;
+	int		i;
+	char	*ret;
 
+	i = 0;
+	if (!*cmd)
+		return (NULL);
+	cmd = ft_strjoin("/", cmd);
+	pth = ft_split(path, ':');
+	while (pth[i])
+	{
+		ret = ft_strjoin(pth[i], cmd);
+		if (!access(ret, X_OK))
+		{
+			free(cmd);
+			free_2d(pth);
+			return (ret);
+		}
+		i++;
+		free(ret);
+	}
+	free(cmd);
+	free(pth);
+	return (NULL);
 }
 
-char	*get_path(char *path, char *argv)
-{
-	char	**cmd;
-	char	*p;
-
-	cmd = ft_split(argv, 32);
-	p = check_cmd(path, cmd[0]);
-	free_2d(cmd);
-	return (p);
-}
