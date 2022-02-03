@@ -6,7 +6,7 @@
 /*   By: hharit <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/01 23:24:19 by hharit            #+#    #+#             */
-/*   Updated: 2022/02/03 02:32:04 by hharit           ###   ########.fr       */
+/*   Updated: 2022/02/03 02:42:07 by hharit           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ void	ft_init(t_pipex *pr, char **path, char **argv, char **envp)
 {
 	pr->fd1 = open(argv[1], O_RDONLY);
 	pr->fd2 = open(argv[4], O_CREAT | O_WRONLY | O_TRUNC, 07666);
-	pr->p = (int *)malloc(sizeof(int) * 2);
 	*path = get_path_envp(envp);
 }
 

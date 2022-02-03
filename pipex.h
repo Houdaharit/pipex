@@ -6,7 +6,7 @@
 /*   By: hharit <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/03 13:43:38 by hharit            #+#    #+#             */
-/*   Updated: 2022/02/03 02:31:06 by hharit           ###   ########.fr       */
+/*   Updated: 2022/02/03 02:41:46 by hharit           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ typedef struct s_pipex
 	char	*cmd2;
 	int		fd1;
 	int		fd2;
-	int		*p;
+	int		p[2];
 	int		pid;
 }	t_pipex;
 
@@ -43,8 +43,7 @@ int		check_file(char *file);
 char	*get_cmd_path(char *path, char *cmd);
 void	get_cmd1(t_pipex *pr, char *argv);
 void	get_cmd2(t_pipex *pr, char *argv);
-void	ft_init(pipex *pr, char **path, char **argv, char **envp);
-char	*get_path(char *path, char *argv);
+void	ft_init(t_pipex *pr, char **path, char **argv, char **envp);
 void	free_2d(char **ptr);
 void	parent_p(t_pipex *pr, char *path, char **argv, char **envp);
 void	child_p(t_pipex *pr, char *path, char **argv, char **envp);
