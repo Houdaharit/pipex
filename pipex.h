@@ -6,7 +6,7 @@
 /*   By: hharit <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/03 13:43:38 by hharit            #+#    #+#             */
-/*   Updated: 2022/02/01 23:37:21 by hharit           ###   ########.fr       */
+/*   Updated: 2022/02/03 02:31:06 by hharit           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,16 +16,21 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <sys/wait.h>
-#include <fcntl.h>
+# include <fcntl.h>
 
 typedef struct s_pipex
 {
-	char	*path_exc;
-	char	*cmd;
-	int		p[2];
+	char	*path_exc1;
+	char	*path_exc2;
+	char	**argv1;
+	char	**argv2;
+	char	*cmd1;
+	char	*cmd2;
 	int		fd1;
 	int		fd2;
-}	pipex;
+	int		*p;
+	int		pid;
+}	t_pipex;
 
 char	**ft_split(char *str, char sep);
 char	*get_path_envp(char **envp);
@@ -34,11 +39,13 @@ char	*ft_strnstr(char *haystack, char *needle, size_t len);
 char	*get_path(char *path, char *argv);
 char	*ft_strdup(char *str);
 char	*ft_strjoin(char *s1, char *s2);
-char	*check_cmd(char *path, char *cmd);
 int		check_file(char *file);
-//void	cmd_execve(char *path, char *argv2, char **envp);
-char	*get_cmd(char *path, char *cmd);
-void	ft_initialize(int **p, char **path, int *fd1, int *fd2, char **argv, char **envp);
+char	*get_cmd_path(char *path, char *cmd);
+void	get_cmd1(t_pipex *pr, char *argv);
+void	get_cmd2(t_pipex *pr, char *argv);
+void	ft_init(pipex *pr, char **path, char **argv, char **envp);
 char	*get_path(char *path, char *argv);
 void	free_2d(char **ptr);
+void	parent_p(t_pipex *pr, char *path, char **argv, char **envp);
+void	child_p(t_pipex *pr, char *path, char **argv, char **envp);
 #endif

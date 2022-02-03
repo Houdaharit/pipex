@@ -6,7 +6,7 @@
 /*   By: hharit <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/03 13:41:18 by hharit            #+#    #+#             */
-/*   Updated: 2022/02/01 23:23:29 by hharit           ###   ########.fr       */
+/*   Updated: 2022/02/03 02:33:39 by hharit           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,16 +43,19 @@ char	*get_path_envp(char	**envp)
 	return (path);
 }
 
-int	check_file(char *file)
+void	get_cmd1(t_pipex *pr, char *argv)
 {
-	if (!access(file, F_OK))
-		return (1);
-	else
-		perror("ERROR!");
-	return (0);
+	pr->argv1 = ft_split(argv, 32);
+	pr->cmd1 = ft_strdup((pr->argv1)[0]);
 }
 
-char	*get_cmd(char *path, char *cmd)
+void	get_cmd2(t_pipex *pr, char *argv)
+{
+	pr->argv2 = ft_split(argv, 32);
+	pr->cmd2 = ft_strdup((pr->argv2)[0]);
+}
+
+char	*get_cmd_path(char *path, char *cmd)
 {
 	char	**pth;
 	int		i;
@@ -79,4 +82,3 @@ char	*get_cmd(char *path, char *cmd)
 	free(pth);
 	return (NULL);
 }
-

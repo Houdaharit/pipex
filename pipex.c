@@ -1,80 +1,69 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.c                                            :+:      :+:    :+:   */
+/*   pipex1.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hharit <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/01/03 13:41:18 by hharit            #+#    #+#             */
-/*   Updated: 2022/02/01 20:58:07 by hharit           ###   ########.fr       */
+/*   Created: 2022/02/01 23:24:19 by hharit            #+#    #+#             */
+/*   Updated: 2022/02/03 02:32:04 by hharit           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	ft_initialize(int **p, char  **path, int *fd1, int *fd2, char **argv, char **envp)
+int	check_file(char *file)
 {
-	*fd1 = open(argv[1], O_RDONLY);
-	*fd2 = open(argv[4], O_CREAT | O_WRONLY, 07666);
+	if (!access(file, F_OK))
+		return (1);
+	else
+		perror(file);
+	return (0);
+}
+
+void	ft_init(t_pipex *pr, char **path, char **argv, char **envp)
+{
+	pr->fd1 = open(argv[1], O_RDONLY);
+	pr->fd2 = open(argv[4], O_CREAT | O_WRONLY | O_TRUNC, 07666);
+	pr->p = (int *)malloc(sizeof(int) * 2);
 	*path = get_path_envp(envp);
-	*p = (int *)malloc(sizeof(int) * 2);
-
 }
 
-void	parent_p(int p0, int p1, int fd1, char *path, char *argv2, char **envp)
+void	parent_p(t_pipex *pr, char *path, char **argv, char **envp)
 {
-	char	*p;
-
-	close(p0);
-	dup2(fd1, 0);
-	dup2(p1, 1);
+	close(pr->p[1]);
+	dup2(pr->p[0], 0);
+	dup2(pr->fd2, 1);
+	get_cmd2(pr, argv[3]);
+	pr->path_exc2 = get_cmd_path(path, pr->cmd2);
 	wait(NULL);
-	p = get_path(path, argv2);
-	cmd_execve(p, argv2, envp);
+	if (execve(pr->path_exc2, pr->argv2, envp) == -1)
+		perror("ERROR!");
 }
 
-void	child_p(int p0, int p1, int fd1, int fd2, char *path, char *argv3, char **envp)
+void	child_p(t_pipex *pr, char *path, char **argv, char **envp)
 {
-	char	*p;
-
-	close(p1);
-	close(fd1);
-	dup2(p0, 0);
-	dup2(fd2, 1);
-	p = get_path(path, argv3);
-	cmd_execve(p, argv3, envp);
+	dup2(pr->fd1, 0);
+	close(pr->p[0]);
+	dup2(pr->p[1], 1);
+	get_cmd1(pr, argv[2]);
+	pr->path_exc1 = get_cmd_path(path, pr->cmd1);
+	if (execve(pr->path_exc1, pr->argv1, envp) == -1)
+		perror("ERROR!");
 }
 
-int main(int argc, char **argv, char **envp)
+int	main(int argc, char **argv, char **envp)
 {
-	int	fd1;
-	int	fd2;
-	int	*p;
+	t_pipex	pr;
 	char	*path;
-	int pid;
 
 	if (argc != 5 || !check_file(argv[1]))
 		exit(EXIT_FAILURE);
-	pid = fork();
-	fd1 = open(argv[1], O_RDONLY);
-    fd2 = open(argv[4], O_CREAT | O_WRONLY, 07666);
-    path = get_path_envp(envp);
-    p = (int *)malloc(sizeof(int) * 2);
-	pipe(p);
-	if (pid == 0)
-	{
-		close(p[1]);
-		close(fd1);
-		dup2(p[0], 0);
-		dup2(fd2, 1);
-		cmd_execve(get_path(path, argv[3]), argv[3],envp);
-	}
+	ft_init(&pr, &path, argv, envp);
+	pipe(pr.p);
+	pr.pid = fork();
+	if (pr.pid == 0)
+		child_p(&pr, path, argv, envp);
 	else
-	{
-		close(p[0]);
-		dup2(fd1, 0);
-		dup2(p[1], 1);
-		wait(NULL);
-		cmd_execve(get_path(path, argv[2]), argv[2], envp);
-	}
+		parent_p(&pr, path, argv, envp);
 }
