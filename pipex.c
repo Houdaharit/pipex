@@ -6,7 +6,7 @@
 /*   By: hharit <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/01 23:24:19 by hharit            #+#    #+#             */
-/*   Updated: 2022/02/03 02:42:07 by hharit           ###   ########.fr       */
+/*   Updated: 2022/02/04 15:21:15 by hharit           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,8 @@ void	parent_p(t_pipex *pr, char *path, char **argv, char **envp)
 
 void	child_p(t_pipex *pr, char *path, char **argv, char **envp)
 {
-	dup2(pr->fd1, 0);
 	close(pr->p[0]);
+	dup2(pr->fd1, 0);
 	dup2(pr->p[1], 1);
 	get_cmd1(pr, argv[2]);
 	pr->path_exc1 = get_cmd_path(path, pr->cmd1);
@@ -61,6 +61,8 @@ int	main(int argc, char **argv, char **envp)
 	ft_init(&pr, &path, argv, envp);
 	pipe(pr.p);
 	pr.pid = fork();
+	if (pr.pid == -1)
+		perror("ERROR");
 	if (pr.pid == 0)
 		child_p(&pr, path, argv, envp);
 	else
