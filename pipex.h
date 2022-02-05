@@ -6,7 +6,7 @@
 /*   By: hharit <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/03 13:43:38 by hharit            #+#    #+#             */
-/*   Updated: 2022/02/03 02:41:46 by hharit           ###   ########.fr       */
+/*   Updated: 2022/02/05 22:59:07 by hharit           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ typedef struct s_pipex
 	int		pid;
 }	t_pipex;
 
+void	ft_putstr(char *str);
 char	**ft_split(char *str, char sep);
 char	*get_path_envp(char **envp);
 int		ft_strlen(char *str);

@@ -6,7 +6,7 @@
 /*   By: hharit <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/01 23:24:19 by hharit            #+#    #+#             */
-/*   Updated: 2022/02/04 15:21:15 by hharit           ###   ########.fr       */
+/*   Updated: 2022/02/05 23:11:12 by hharit           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,17 @@ void	ft_init(t_pipex *pr, char **path, char **argv, char **envp)
 
 void	parent_p(t_pipex *pr, char *path, char **argv, char **envp)
 {
+	get_cmd2(pr, argv[3]);
+	pr->path_exc2 = get_cmd_path(path, pr->cmd2);
+	if (!pr->path_exc2)
+	{
+		ft_putstr(pr->cmd2);
+		ft_putstr(": command not found!");
+		exit(1);
+	}
 	close(pr->p[1]);
 	dup2(pr->p[0], 0);
 	dup2(pr->fd2, 1);
-	get_cmd2(pr, argv[3]);
-	pr->path_exc2 = get_cmd_path(path, pr->cmd2);
 	wait(NULL);
 	if (execve(pr->path_exc2, pr->argv2, envp) == -1)
 		perror("ERROR!");
@@ -42,11 +48,17 @@ void	parent_p(t_pipex *pr, char *path, char **argv, char **envp)
 
 void	child_p(t_pipex *pr, char *path, char **argv, char **envp)
 {
+	get_cmd1(pr, argv[2]);
+	pr->path_exc1 = get_cmd_path(path, pr->cmd1);
+	if (!pr->path_exc1)
+	{
+		ft_putstr(pr->cmd1);
+		ft_putstr(": command not found!");
+		exit(1);
+	}
 	close(pr->p[0]);
 	dup2(pr->fd1, 0);
 	dup2(pr->p[1], 1);
-	get_cmd1(pr, argv[2]);
-	pr->path_exc1 = get_cmd_path(path, pr->cmd1);
 	if (execve(pr->path_exc1, pr->argv1, envp) == -1)
 		perror("ERROR!");
 }

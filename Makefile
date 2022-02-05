@@ -4,7 +4,7 @@ CC = cc
 
 CFLAGS = -Wall -Wextra -Werror 
 
-SRC = pipex.c ft_strjoin.c ft_strnstr.c ft_split.c pipex_utils.c
+SRC = pipex.c ft_strjoin.c ft_strnstr.c ft_split.c pipex_utils.c ft_putstr.c
 
 OBJ = ${SRC:.c=.o}
 
