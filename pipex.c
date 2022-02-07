@@ -6,7 +6,7 @@
 /*   By: hharit <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/01 23:24:19 by hharit            #+#    #+#             */
-/*   Updated: 2022/02/06 22:23:29 by hharit           ###   ########.fr       */
+/*   Updated: 2022/02/07 19:15:54 by hharit           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,8 @@ void	parent_p(t_pipex *pr, char *path, char **argv, char **envp)
 	if (!pr->path_exc2)
 	{
 		ft_putstr(pr->cmd2);
-		ft_putstr(": command not found!");
-		exit(1);
+		ft_putstr(": command not found!\n");
+		exit(127);
 	}
 	dup2(pr->p[0], 0);
 	close(pr->p[1]);
@@ -55,8 +55,8 @@ void	child_p(t_pipex *pr, char *path, char **argv, char **envp)
 	if (!pr->path_exc1)
 	{
 		ft_putstr(pr->cmd1);
-		ft_putstr(": command not found!");
-		exit(1);
+		ft_putstr(": command not found!\n");
+		exit(127);
 	}
 	dup2(pr->fd1, 0);
 	close(pr->p[0]);
