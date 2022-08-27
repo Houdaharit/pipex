@@ -4,19 +4,17 @@ CC = cc
 
 CFLAGS = -Wall -Wextra -Werror 
 
-SRC = pipex.c ft_strjoin.c ft_strnstr.c ft_split.c pipex_utils.c ft_putstr.c
-
-OBJ = ${SRC:.c=.o}
+SRC = src/pipex.c src/ft_strjoin.c src/ft_strnstr.c\
+      src/ft_split.c src/pipex_utils.c src/ft_putstr.c
 
 all: $(NAME)
 
-$(NAME) : $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) -o $(NAME)
+$(NAME) : $(SRC)
+	$(CC) $(CFLAGS) $(SRC) -o $(NAME)
 
 clean : 
-	rm -rf $(OBJ)
+	rm -rf $(NAME)
 
 fclean : clean
-	rm -rf $(NAME)
 
 re: fclean all
